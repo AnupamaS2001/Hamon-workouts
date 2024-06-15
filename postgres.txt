@@ -1,0 +1,155 @@
+1.Create a table employee, with the following fields and constraints added to each field
+    .id (primary key)
+    .name (not null)
+    .department (like marketing, sales, development, testing, devops etc) (not null)
+    .branch (use any city name)  (a null field)
+    .salary ( a five-digit value) ( a not null field with default value 0)
+
+        create table employee (id serial primary key, name varchar(100) not null,department varchar(100) not null, branch varchar(50) null, salary int not null default 0 check (salary between 0 and 99999));
+
+2.Insert at least 10 records into the employee table with relevant data.
+
+        INSERT INTO employee(name, department, branch, salary) values('anu', 'sales', 'london', 45000), ('christo', 'marketing', 'thiruvanathapuram', 35000.00), ('sonappi', 'marketing', 'kochi', 40000.00), ('reshma', 'devops', 'tokyo', 55000),('fasu', 'testing', 'delhi', 35000),('swarag', 'testing', 'mumbai', 52000),('sona', 'sales', 'thiruvanathapuram', 41000),('aiswarya', 'testing', 'canada', 68000),('haritha', 'marketing', 'paris', 36000),('joprin', 'devops', 'london', 45000);
+
+3.Add the field email, and phone_number with null constraint. (Phone Number can be a string)
+
+        ALTER TABLE employee ADD column email varchar(50) NULL unique; 
+
+        ALTER TABLE employee ADD column phone_number varchar(30) NULL; 
+
+4.Modify the field salary to remove default constraints added to it.
+
+        ALTER TABLE employee ALTER COLUMN salary DROP default;
+
+5.Update the fields phone_number and email for the employee having a salary between 10100 and 50045 and their department should be either marketing or testing.
+
+        update employee set phone_number = '9048008409', email='company@gmail.com'  where (salary>10100 and salary<50045) and department in ('marketing' ,'testing');
+
+6.Update email for the rest of the employees.
+
+        UPDATE employee SET email = 'anu@gmail.com' WHERE id = 1;
+
+7.Modify the field email to add a UNIQUE constraint to it.
+
+        ALTER TABLE employee ADD CONSTRAINT unique_email UNIQUE (email);
+
+8.Select all the employees
+
+        select * from employee;
+
+    id |   name   | department |      branch       | salary |       email        | phone_number 
+----+----------+------------+-------------------+--------+--------------------+--------------
+  1 | anu      | sales      | london            |  45000 | anu@gmail.com      | 
+  4 | reshma   | devops     | tokyo             |  55000 | reshma@gmail.com   | 
+  6 | swarag   | testing    | mumbai            |  52000 | swarag@gmail.com   | 
+  7 | sona     | sales      | thiruvanathapuram |  41000 | sona@gmail.com     | 
+  8 | aiswarya | testing    | canada            |  68000 | aiswarya@gmail.com | 
+ 10 | joprin   | devops     | london            |  45000 | joprin@gmail.com   | 
+  9 | haritha  | marketing  | paris             |  36000 | hari@gmail.com     | 9048008409
+  5 | fasu     | testing    | delhi             |  35000 | fasi@gmail.com     | 9048008409
+  3 | sonappi  | marketing  | kochi             |  40000 | sonappi@gmail.com  | 9048008409
+  2 | christo  | marketing  | thiruvanathapuram |  35000 | chris@gmail.com    | 9048008409
+(10 rows)
+
+
+9.Select id, name, email from employees having a salary greater than or equal to 45000, the department should contain the string ‘maRKeT’, and the branch can be ‘Being’, ‘Tokyo’ or ‘New York’.
+Select only the first 5 records in the descending order of salary. (You can add new records into the employee table if necessary)
+
+        select id,name,email from employee where salary>=45000 and department ilike '%maRKet%' and branch in ('paris','tokyo', 'london') order by salary desc limit 5;
+ id | name | email 
+----+------+-------
+(0 rows)
+
+
+10.Select all the employees having phone_number null;
+
+        select name from employee where phone_number is null;
+   name   
+----------
+ anu
+ reshma
+ swarag
+ sona
+ aiswarya
+ joprin
+ manu
+ nandhan
+ sree
+ aru
+ salu
+(11 rows)
+
+
+11.Find the no. of employees in each department with a count greater than 3. Display in the ascending order of the department.
+
+        select department ,count(name) from employee group by department having count(name)>3 order by department ;
+ department | count 
+------------+-------
+ marketing  |     5
+ testing    |     4
+(2 rows)
+
+12.Find the maximum, minimum, and average salary in each department.
+
+        select department, max(salary),min(salary),avg(salary) from employee group by department; 
+ department |  max  |  min  |        avg         
+------------+-------+-------+--------------------
+ devops     | 55000 | 45000 | 51666.666666666667
+ mareketing | 49000 | 49000 | 49000.000000000000
+ testing    | 68000 | 35000 | 50000.000000000000
+ marketing  | 60000 | 35000 | 44600.000000000000
+ sales      | 45000 | 41000 | 43000.000000000000
+(5 rows)
+
+
+13.Find distinct emails from the employee table.
+
+        SELECT DISTINCT email FROM employee;
+       email        
+--------------------
+ sree@gmail.com
+ salu@gmail.com
+ sona@gmail.com
+ chris@gmail.com
+ fasi@gmail.com
+ aiswarya@gmail.com
+ manu@gmail.com
+ nandhan@gmail.com
+ reshma@gmail.com
+ hari@gmail.com
+ aru@gmail.com
+ joprin@gmail.com
+ swarag@gmail.com
+ sonappi@gmail.com
+ anu@gmail.com
+(15 rows)
+
+14.Find the no. of employees in each department whose name starts with the letter ‘L’.
+
+        select department, count(name) from employee where name ILIKE 'l%' group by department ;
+ department | count 
+------------+-------
+(0 rows)
+
+15.Find the no. of employees, no. of employees with phone_number in each city.
+
+        select branch, count(*), count(phone_number) from employee  group by branch;
+      branch       | count | count 
+-------------------+-------+-------
+ paris             |     1 |     1
+ tokyo             |     2 |     0
+ london            |     2 |     0
+ kochi             |     1 |     1
+ mumbai            |     1 |     0
+ being             |     2 |     0
+ delhi             |     1 |     1
+ canada            |     1 |     0
+ newyork           |     1 |     0
+ thiruvanathapuram |     3 |     1
+(10 rows)
+
+
+16.Delete the employee records with no phone_number and should belong to the city ‘Tokyo’.
+
+        DELETE FROM employee where phone_number is null AND branch = 'tokyo';
+DELETE 2
